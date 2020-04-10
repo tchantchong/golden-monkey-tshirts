@@ -1,12 +1,15 @@
 const express = require('express');
+const cors = require('cors');
 const mongoose = require('mongoose');
 const requireDir = require('require-dir');
-const bodyParser = require('body-parser')
 
 // App Initialization
 const app = express();
+app.use(express.json());
+app.use(cors());
 requireDir('./models');
 requireDir('./controllers');
+app.use('/api', require('./routes'));
 
 // DB Initialization
 mongoose.connect(
@@ -15,10 +18,4 @@ mongoose.connect(
         useNewUrlParser: true,
         useUnifiedTopology: true
     });
-
-app.use(bodyParser.urlencoded({
-    extended: false
-  }));
-app.use(bodyParser.json());
-app.use('/api', require('./routes'));
 app.listen(7777);
