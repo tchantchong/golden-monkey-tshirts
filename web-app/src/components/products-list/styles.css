@@ -1,0 +1,33 @@
+.ProductsList {
+    /* max-width: 700px; */
+    width: auto;
+    margin: 0px auto 0;
+    padding: 20px;
+    font-family: monospace;
+}
+
+.ProductsList article {
+    background: #fff;
+    border: 2px solid #DDD;
+    border-radius: 5px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+#product-name {
+    font-size: 18px;
+}
+
+#product-description {
+    font-size: 16px;
+    color: #999;
+    margin-top: 5px;
+    line-height: 24px;
+}
+
+#product-price {
+    font-size: 16px;
+    color: #666;
+    margin-top: 2px;
+    line-height: 24px;
+}

@@ -6,10 +6,10 @@ function Header() {
     return (
       <div className="Header">
         <span>
-          <img src={logoImg} id="header-logo" />
+          <img src={logoImg} id="header-logo" alt="Golden Monkey Logo"/>
         </span>
         <span>
-        <h1 align="center">Welcome to Golden Monkey T-Shirts Online Store</h1>
+        <h1 align="center">Golden Monkey T-Shirts</h1>
         </span>
       </div>
     );
