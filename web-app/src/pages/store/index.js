@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import ProductService from '../../services/product-service';
 import './styles.css'
 
-class ProductsList extends Component {
+class StorePage extends Component {
     state = {
         products: [],
         productsCount: 0
@@ -41,4 +41,4 @@ class ProductsList extends Component {
     }
 }
 
-export default ProductsList;
+export default StorePage;
