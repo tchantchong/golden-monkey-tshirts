@@ -1,0 +1,32 @@
+.MainMenu {
+    background: #e3e06b;
+    height: 36px;
+}
+
+ul {
+    list-style-type: none;
+    margin: 0px;
+    padding: 0px;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    justify-content: center;
+}
+
+li {
+    float: left;
+    height: 100%;
+}
+
+li a {
+    display: block;
+    padding: 8px;
+    text-decoration: none;
+    color: black;
+ }
+
+ li a:hover {
+     background: #cc9314;
+     color: white;
+ }
