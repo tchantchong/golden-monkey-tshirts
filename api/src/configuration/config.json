@@ -1,0 +1,10 @@
+{
+    "dev": {
+        "id": "development",
+        "port": 7777,
+        "mongodb": {
+            "url": "mongodb+srv://<username>:<password>@dev-3tuh8.azure.mongodb.net/store?retryWrites=true&w=majority",
+            "username": "tchantchong"
+        }
+    }
+}
