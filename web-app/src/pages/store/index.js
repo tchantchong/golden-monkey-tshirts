@@ -13,7 +13,7 @@ class StorePage extends Component {
     }
 
     loadProducts = async () => {
-        let response = await ProductService.get('/products');
+        let response = await ProductService.get('/get-products');
         this.setState({ 
             productsCount: response.data.length,
             products: response.data
