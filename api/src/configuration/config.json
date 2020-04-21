@@ -1,5 +1,5 @@
 {
-    "dev": {
+    "development": {
         "id": "development",
         "port": 7777,
         "mongodb": {
