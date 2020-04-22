@@ -4,7 +4,11 @@ const jwt = require('jsonwebtoken');
 
 module.exports = {
     async getUsers(req, resp) {
-        verifyJWT(req, resp);
+        let verification = verifyJWT(req, resp);
+        if (!verification.result) {
+            return verification.returnValue;
+        }
+
         if (req.decoded.role === "admin") {
             let users = await User.find();
             return resp.json(users);
@@ -21,20 +25,24 @@ module.exports = {
             role: "user"
         });
         user.setPassword(req.body.password);
-        let createdUser = await User
-            .create(user)
-            .catch(exception => {
-                let responseErrors = [];
-                let serverErrors = exception.errors;
-                if (serverErrors["username"] != undefined) {
-                    responseErrors.push(`Username '${serverErrors["username"].value}' ${serverErrors["username"].message}.`);
-                }
-                if (serverErrors["email"] != undefined) {
-                    responseErrors.push(`Email '${serverErrors["email"].value}' ${serverErrors["email"].message}.`);
-                }
-                return resp.status(422).send(responseErrors);
-            });
-        return resp.json(createdUser);
+        try {
+            let createdUser = await User
+                .create(user)
+                .catch(exception => {
+                    let responseErrors = [];
+                    let serverErrors = exception.errors;
+                    if (serverErrors["username"] !== undefined) {
+                        responseErrors.push(`Username '${serverErrors["username"].value}' ${serverErrors["username"].message}.`);
+                    }
+                    if (serverErrors["email"] !== undefined) {
+                        responseErrors.push(`Email '${serverErrors["email"].value}' ${serverErrors["email"].message}.`);
+                    }
+                    return resp.status(422).send(responseErrors);
+                });
+            return resp.json(createdUser);
+        } catch(err) {
+            return resp.status(500).send({error: "Failed to create user."});
+        }
     },
 
     async deleteUserByUsername(req,resp) {
@@ -46,9 +54,13 @@ module.exports = {
             return resp.status(400).send({error: `User '${req.body.username}' doesn't exist.`});
         }
 
-        await User.findOneAndRemove({
-            username: req.body.username
-        });
+        try {
+            await User.findOneAndRemove({
+                username: req.body.username
+            });
+        } catch(err) {
+            return resp.status(500).send({error: `Failed to delete user '${req.body.username}'`});
+        }
 
         if (await User.exists({ username: req.body.username })) {
             return resp.status(500).send({error: `Failed to delete user '${req.body.username}'`});
@@ -81,7 +93,10 @@ module.exports = {
     },
 
     async updateUserInfo(req, resp) {
-        verifyJWT(req, resp);
+        let verification = verifyJWT(req, resp);
+        if (!verification.result) {
+            return verification.returnValue;
+        }
 
         let params = {
             email: req.body.email
@@ -92,27 +107,41 @@ module.exports = {
             }
         }
 
-        let user = await User.findOneAndUpdate({
-            username: req.decoded.username
-        },
-        params,
-        {
-            new: true
-        });
-
-        return resp.send(user);
+        try {
+            let user = await User.findOneAndUpdate({
+                username: req.decoded.username
+            },
+            params,
+            {
+                new: true
+            });
+    
+            return resp.send(user);
+        } catch (err) {
+            return resp.status(500).send({error: `Failed to update user ${req.decoded.username}`});
+        }
+        
     }
 }
 
 function verifyJWT(req, res) {
     let token = req.headers['x-access-token'];
     if (!token) {
-        return res.status(401).send({ error: 'No token provided.' });
+        return {
+            result: false,
+            returnValue: res.status(401).send({ error: 'No token provided.' })
+        };
     }
-    jwt.verify(token, process.env.SECRET, (error, decoded) => {
-        if (error) {
-            return res.status(500).send({ error: 'Failed to authenticate token.' });
-        }
+    try {
+        let decoded = jwt.verify(token, process.env.SECRET);
         req.decoded = decoded;
-    });
+        return {
+            result: true
+        };
+    } catch(err) {
+        return {
+            result: false,
+            returnValue: res.status(500).send({ error: 'Failed to authenticate token.' })
+        };
+    }
 }
