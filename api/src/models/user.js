@@ -74,3 +74,5 @@ UserSchema.plugin(uniqueValidator, {
 });
 
 mongoose.model('User', UserSchema);
+
+teste clone
